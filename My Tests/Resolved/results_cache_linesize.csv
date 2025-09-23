@@ -1,0 +1,5 @@
+line_size,read_access,total_hit,total_miss,hit_rate,main_memory_read_access,cache_read_time,main_memory_read_time,total_time,amat
+1,5,0,5,0.0,5,5,50,55,11
+2,5,2,3,0.4,3,5,30,35,7
+4,5,3,2,0.6,2,5,20,25,5
+

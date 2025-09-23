@@ -1,0 +1,4 @@
+arch,page_size,tlb,page_table_reads,tlb_reads,tlb_hit,mem_time,page_table_time,total_time
+TLB-ON,4,on,2,5,3,70,20,79
+TLB-OFF,4,off,5,0,0,100,50,100
+

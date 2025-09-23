@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Amnesia - Gráficos</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+ body{font-family:Arial,Helvetica,sans-serif;margin:24px}
+ canvas{max-width:880px;margin:16px 0}
+ table{border-collapse:collapse;margin:8px 0}
+ th,td{border:1px solid #ddd;padding:6px 10px}
+</style>
+</head>
+<body>
+<h2>Resultados - Cache</h2>
+
+<h3>Tamanho de Linha (lineSize)</h3>
+<canvas id="lsHit"></canvas>
+<canvas id="lsAmat"></canvas>
+
+<h3>Associatividade</h3>
+<canvas id="assocHit"></canvas>
+<canvas id="assocAmat"></canvas>
+
+<h3>Políticas (modelo a ser preenchido)</h3>
+<canvas id="polAmat"></canvas>
+
+<h3>Memória Virtual (TLB)</h3>
+<canvas id="vmTime"></canvas>
+
+<script>
+// CSV embutidos (gerados pelo assistente)
+const csvLS = `line_size,read_access,total_hit,total_miss,hit_rate,main_memory_read_access,cache_read_time,main_memory_read_time,total_time,amat\n1,5,0,5,0.0,5,5,50,55,11\n2,5,2,3,0.4,3,5,30,35,7\n4,5,3,2,0.6,2,5,20,25,5`;
+const csvAssoc = `associativity,read_access,total_hit,total_miss,hit_rate,main_memory_read_access,cache_read_time,main_memory_read_time,total_time,amat\n1,20,0,20,0.0,20,20,200,220,11\n2,20,0,20,0.0,20,20,200,220,11\n4,20,16,4,0.8,4,20,40,60,3`;
+const csvPol = `policy,read_access,write_access,total_hit,total_miss,hit_rate,main_memory_read_access,main_memory_write_access,total_time,amat\nWT-FIFO,8,8,12,4,0.75,4,8,224,14\nWT-LRU,8,8,12,4,0.75,4,8,224,14\nWB-FIFO,8,8,12,4,0.75,4,2,104,6.5\nWB-LRU,8,8,12,4,0.75,4,2,104,6.5`;
+const csvVM = `arch,page_size,tlb,page_table_reads,tlb_reads,tlb_hit,mem_time,page_table_time,total_time\nTLB-ON,4,on,2,5,3,70,20,79\nTLB-OFF,4,off,5,0,0,100,50,100`;
+
+function parseCSV(text){
+  const [header,...rows] = text.trim().split(/\r?\n/);
+  const cols = header.split(',');
+  return rows.map(r=>{
+    const vals = r.split(',');
+    const obj={};
+    cols.forEach((c,i)=>obj[c]=isNaN(+vals[i])?vals[i]:+vals[i]);
+    return obj;
+  });
+}
+
+const ls = parseCSV(csvLS);
+const assoc = parseCSV(csvAssoc);
+const pol = parseCSV(csvPol);
+const vm = parseCSV(csvVM);
+
+function makeChart(id, labels, datasets, title){
+  new Chart(document.getElementById(id),{
+    type:'line',
+    data:{labels,datasets},
+    options:{responsive:true,plugins:{legend:{position:'top'},title:{display:true,text:title}}}
+  });
+}
+
+makeChart('lsHit', ls.map(x=>x.line_size), [
+  {label:'Hit', data: ls.map(x=>x.total_hit), borderColor:'#2a9d8f', backgroundColor:'#2a9d8f33'},
+  {label:'Miss', data: ls.map(x=>x.total_miss), borderColor:'#e76f51', backgroundColor:'#e76f5133'}
+], 'LineSize x Hits/Misses');
+
+makeChart('lsAmat', ls.map(x=>x.line_size), [
+  {label:'AMAT', data: ls.map(x=>x.amat), borderColor:'#264653', backgroundColor:'#26465333'}
+], 'LineSize x AMAT');
+
+makeChart('assocHit', assoc.map(x=>x.associativity), [
+  {label:'Hit', data: assoc.map(x=>x.total_hit), borderColor:'#2a9d8f', backgroundColor:'#2a9d8f33'},
+  {label:'Miss', data: assoc.map(x=>x.total_miss), borderColor:'#e76f51', backgroundColor:'#e76f5133'}
+], 'Associatividade x Hits/Misses');
+
+makeChart('assocAmat', assoc.map(x=>x.associativity), [
+  {label:'AMAT', data: assoc.map(x=>x.amat), borderColor:'#264653', backgroundColor:'#26465333'}
+], 'Associatividade x AMAT');
+
+makeChart('polAmat', pol.map(x=>x.policy), [
+  {label:'AMAT', data: pol.map(x=>x.amat || null), borderColor:'#6a4c93', backgroundColor:'#6a4c9333'}
+], 'Políticas (WT/WB x FIFO/LRU) x AMAT');
+
+makeChart('vmTime', vm.map(x=>x.arch), [
+  {label:'Mem Time', data: vm.map(x=>x.mem_time), borderColor:'#43aa8b', backgroundColor:'#43aa8b33'},
+  {label:'Page Table Time', data: vm.map(x=>x.page_table_time), borderColor:'#577590', backgroundColor:'#57759033'},
+  {label:'Total Time', data: vm.map(x=>x.total_time), borderColor:'#f94144', backgroundColor:'#f9414433'}
+], 'VM: TLB ligado vs desligado');
+</script>
+</body>
+</html>
+
+
