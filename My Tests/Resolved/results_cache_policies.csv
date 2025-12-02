@@ -1,6 +1,0 @@
-policy,read_access,write_access,total_hit,total_miss,hit_rate,main_memory_read_access,main_memory_write_access,total_time,amat
-WT-FIFO,8,8,12,4,0.75,4,8,224,14
-WT-LRU,8,8,12,4,0.75,4,8,224,14
-WB-FIFO,8,8,12,4,0.75,4,2,104,6.5
-WB-LRU,8,8,12,4,0.75,4,2,104,6.5
-

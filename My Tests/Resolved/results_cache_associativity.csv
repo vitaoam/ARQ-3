@@ -1,5 +1,0 @@
-associativity,read_access,total_hit,total_miss,hit_rate,main_memory_read_access,cache_read_time,main_memory_read_time,total_time,amat
-1,20,0,20,0.0,20,20,200,220,11
-2,20,0,20,0.0,20,20,200,220,11
-4,20,16,4,0.8,4,20,40,60,3
-
